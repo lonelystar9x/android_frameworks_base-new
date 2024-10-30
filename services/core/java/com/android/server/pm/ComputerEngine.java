@@ -165,6 +165,8 @@ import com.android.server.utils.WatchedSparseBooleanArray;
 import com.android.server.utils.WatchedSparseIntArray;
 import com.android.server.wm.ActivityTaskManagerInternal;
 
+import org.rising.server.QuickSwitchService;
+
 import libcore.util.EmptyArray;
 
 import java.io.BufferedOutputStream;
@@ -1005,6 +1007,8 @@ public class ComputerEngine implements Computer {
             HideAppListUtils.shouldHideAppList(mContext, packageName)) {
             return null;
         }
+        if (QuickSwitchService.shouldHide(userId, packageName))
+            return null;
         return getApplicationInfoInternal(packageName, flags, Binder.getCallingUid(), userId);
     }
 
@@ -1022,6 +1026,8 @@ public class ComputerEngine implements Computer {
             HideAppListUtils.shouldHideAppList(mContext, packageName)) {
             return null;
         }
+        if (QuickSwitchService.shouldHide(userId, packageName))
+            return null;
         flags = updateFlagsForApplication(flags, userId);
 
         if (!isRecentsAccessingChildProfiles(Binder.getCallingUid(), userId)) {
@@ -1725,6 +1731,8 @@ public class ComputerEngine implements Computer {
             HideAppListUtils.shouldHideAppList(mContext, packageName)) {
             return null;
         }
+        if (QuickSwitchService.shouldHide(userId, packageName))
+            return null;
         return getPackageInfoInternal(packageName, PackageManager.VERSION_CODE_HIGHEST,
                 flags, Binder.getCallingUid(), userId);
     }
@@ -1848,7 +1856,7 @@ public class ComputerEngine implements Computer {
         enforceCrossUserPermission(callingUid, userId, false /* requireFullPermission */,
                 false /* checkShell */, "get installed packages");
 
-        return recreatePackageList(callingUid, mContext,
+        return QuickSwitchService.recreatePackageList(callingUid, mContext,
                         userId, getInstalledPackagesBody(flags, userId, callingUid));
     }
 
@@ -4965,7 +4973,7 @@ public class ComputerEngine implements Computer {
             }
         }
 
-        return recreateApplicationList(callingUid, mContext, userId, list);
+        return QuickSwitchService.recreateApplicationList(callingUid, mContext, userId, list);
     }
 
     @Nullable
