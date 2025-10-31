@@ -45,6 +45,7 @@ import android.view.animation.Interpolator;
 
 import androidx.annotation.FloatRange;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.android.app.tracing.coroutines.TrackTracer;
 import com.android.internal.annotations.VisibleForTesting;
@@ -139,6 +140,7 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
      */
     public static final int OPAQUE = 2;
     private boolean mClipsQsScrim;
+    private int mBackgroundColor = Color.TRANSPARENT;
 
     /**
      * Whether an activity is launching over the lockscreen. During the launch animation, we want to
@@ -1153,6 +1155,9 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
             if (mKeyguardOccluded || hideNotificationScrim) {
                 mNotificationsAlpha = 0;
             }
+            if (mState == ScrimState.KEYGUARD && mBehindAlpha > 0 && !mClipsQsScrim) {
+                mBehindTint = mBackgroundColor;
+            }
         }
         if (mState != ScrimState.UNLOCKED) {
             mAnimatingPanelExpansionOnUnlock = false;
@@ -1688,6 +1693,9 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
         for (ScrimState state : ScrimState.values()) {
             state.setSurfaceColor(surface);
         }
+
+        int colorRes = mIsBlurSupported ? R.color.shade_panel_base : R.color.shade_panel_fallback;
+        mBackgroundColor = ContextCompat.getColor(mScrimBehind.getContext(), colorRes);
 
         mNeedsDrawableColorUpdate = true;
     }
