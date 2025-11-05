@@ -16,19 +16,14 @@
 
 package com.android.systemui.statusbar.core
 
-import android.app.ActivityThread
-import android.os.UserHandle
-import android.provider.Settings
+import com.android.systemui.Flags
 import com.android.systemui.flags.FlagToken
 import com.android.systemui.flags.RefactorFlagUtils
 
 /** Helper for reading and using the status bar simple fragment flag state */
 object StatusBarRootModernization {
-
-    /** Setting name for removing the fragment */
-    const val SETTING_NAME = "status_bar_root_modernization_enabled"
     /** Aconfig flag for removing the fragment */
-    const val FLAG_NAME = SETTING_NAME
+    const val FLAG_NAME = Flags.FLAG_STATUS_BAR_ROOT_MODERNIZATION
 
     /** Shows a "compose->bar" text in the status bar for debug purposes */
     const val SHOW_DISAMBIGUATION = false
@@ -40,12 +35,7 @@ object StatusBarRootModernization {
     /** Is the refactor enabled */
     @JvmStatic
     inline val isEnabled
-        get(): Boolean {
-            val app = ActivityThread.currentApplication() ?: return false
-            return Settings.System.getIntForUser(
-                    app.contentResolver, SETTING_NAME, 0, UserHandle.USER_CURRENT
-            ) == 1
-        }
+        get() = Flags.statusBarRootModernization()
 
     /**
      * Called to ensure code is only run when the flag is enabled. This protects users from the

@@ -14,7 +14,7 @@
 
 package com.android.systemui.statusbar.phone;
 
-import com.android.settingslib.RuntimeFlags;
+import static com.android.settingslib.flags.Flags.newStatusBarIcons;
 import static com.android.systemui.plugins.DarkIconDispatcher.getTint;
 
 import android.animation.ArgbEvaluator;
@@ -99,7 +99,7 @@ public class DarkIconDispatcherImpl implements SysuiDarkIconDispatcher,
                 applyDarkIntensity(mDarkIntensity);
             }
         };
-        if (RuntimeFlags.newStatusBarIcons()) {
+        if (newStatusBarIcons()) {
             mDarkModeIconColorSingleTone = Color.BLACK;
             mLightModeIconColorSingleTone = Color.WHITE;
         } else {
